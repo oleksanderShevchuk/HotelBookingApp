@@ -1,29 +1,25 @@
-﻿using HotelBooking.Domain.Entities;
+﻿using HotelBooking.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HotelBooking.Infrastructure.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
+    public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.HasKey(u => u.Id);
+        builder.Property(u => u.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-        builder.Property(u => u.UserName)
-            .IsRequired()
-            .HasMaxLength(100);
+        builder.Property(u => u.IsActive)
+            .HasDefaultValue(true);
 
-        builder.Property(u => u.Email)
-            .IsRequired()
-            .HasMaxLength(150);
+        builder.Property(u => u.IsEmailConfirmed)
+            .HasDefaultValue(false);
 
-        builder.Property(u => u.PasswordHash)
-            .IsRequired();
-
-        builder.HasOne(u => u.Role)
-            .WithMany(r => r.Users)
-            .HasForeignKey(u => u.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(u => u.Bookings)
+            .WithOne(b => b.User)
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

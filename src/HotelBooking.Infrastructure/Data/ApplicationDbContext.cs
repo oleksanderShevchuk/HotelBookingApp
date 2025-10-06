@@ -1,15 +1,17 @@
 ﻿using HotelBooking.Domain.Entities;
+using HotelBooking.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBooking.Infrastructure.Data;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : base(options){}
+        : base(options)
+    {
+    }
 
-    public DbSet<User> Users => Set<User>();
-    public DbSet<UserRole> Roles => Set<UserRole>();
     public DbSet<Hotel> Hotels => Set<Hotel>();
     public DbSet<Room> Rooms => Set<Room>();
     public DbSet<RoomCategory> RoomCategories => Set<RoomCategory>();
@@ -19,7 +21,6 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Apply all configurations automatically
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

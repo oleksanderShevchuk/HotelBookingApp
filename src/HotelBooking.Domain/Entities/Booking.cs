@@ -1,11 +1,12 @@
 ﻿using HotelBooking.Domain.Common;
+using HotelBooking.Infrastructure.Identity;
 
 namespace HotelBooking.Domain.Entities;
 
 public class Booking : BaseEntity
 {
     public Guid UserId { get; set; }
-    public User User { get; set; } = default!;
+    public ApplicationUser User { get; set; } = default!;
 
     public Guid RoomId { get; set; }
     public Room Room { get; set; } = default!;

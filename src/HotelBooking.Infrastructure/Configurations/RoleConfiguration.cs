@@ -1,24 +1,32 @@
-﻿using HotelBooking.Domain.Entities;
-using HotelBooking.Infrastructure.Data;
+﻿using HotelBooking.Infrastructure.Data;
+using HotelBooking.Infrastructure.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace HotelBooking.Infrastructure.Configurations;
 
-public class RoleConfiguration : IEntityTypeConfiguration<UserRole>
+public class RoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
 {
-    public void Configure(EntityTypeBuilder<UserRole> builder)
+    public void Configure(EntityTypeBuilder<ApplicationRole> builder)
     {
-        builder.HasKey(r => r.Id);
+        builder.Property(r => r.Description)
+           .HasMaxLength(200);
 
-        builder.Property(r => r.Name)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        // Seed default roles
         builder.HasData(
-            new UserRole { Id = SeedGuids.AdminRoleId, Name = "Admin" },
-            new UserRole { Id = SeedGuids.ClientRoleId, Name = "Client" }
-        );
+           new ApplicationRole
+           {
+               Id = SeedGuids.AdminRoleId,
+               Name = "Admin",
+               NormalizedName = "ADMIN",
+               Description = "Full access to manage hotels, rooms, and bookings"
+           },
+           new ApplicationRole
+           {
+               Id = SeedGuids.ClientRoleId,
+               Name = "Client",
+               NormalizedName = "CLIENT",
+               Description = "Can browse hotels and make bookings"
+           }
+       );
     }
 }
