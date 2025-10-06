@@ -1,6 +1,9 @@
 ﻿using System.Text;
+using HotelBooking.Application.Interfaces.Hotels;
+using HotelBooking.Application.Services;
 using HotelBooking.Infrastructure.Data;
 using HotelBooking.Infrastructure.Identity;
+using HotelBooking.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +21,12 @@ public static class DependencyInjection
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+        // Repositories
+        services.AddScoped<IHotelRepository, HotelRepository>();
+
+        // Services
+        services.AddScoped<IHotelService, HotelService>();
 
         // Identity
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

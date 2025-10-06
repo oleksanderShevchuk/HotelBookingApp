@@ -21,5 +21,11 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
         builder.Property(h => h.Address)
             .IsRequired()
             .HasMaxLength(300);
+
+        builder.Property(h => h.Description)
+           .HasMaxLength(2000);
+
+        builder.Property(h => h.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }
