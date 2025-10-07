@@ -8,8 +8,16 @@ public class UserConfiguration : IEntityTypeConfiguration<ApplicationUser>
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
+        builder.Property(u => u.Id)
+                .HasColumnType("binary(16)")
+                .ValueGeneratedOnAdd();
+
         builder.Property(u => u.CreatedAt)
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+               .HasColumnType("datetime(6)")
+               .ValueGeneratedOnAdd();
+
+        builder.Property(u => u.UpdatedAt)
+               .HasColumnType("datetime(6)");
 
         builder.Property(u => u.IsActive)
             .HasDefaultValue(true);

@@ -27,6 +27,7 @@ public static class DependencyInjection
 
         // Services
         services.AddScoped<IHotelService, HotelService>();
+        services.AddScoped<TokenService>();
 
         // Identity
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

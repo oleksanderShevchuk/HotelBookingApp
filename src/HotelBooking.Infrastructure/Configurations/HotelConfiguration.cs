@@ -10,6 +10,17 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
     {
         builder.HasKey(h => h.Id);
 
+        builder.Property(h => h.Id)
+                 .HasColumnType("binary(16)")
+                 .ValueGeneratedOnAdd();
+
+        builder.Property(h => h.CreatedAt)
+               .HasColumnType("datetime(6)")
+               .ValueGeneratedOnAdd();
+
+        builder.Property(h => h.UpdatedAt)
+               .HasColumnType("datetime(6)");
+
         builder.Property(h => h.Name)
             .IsRequired()
             .HasMaxLength(200);
@@ -24,8 +35,5 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
 
         builder.Property(h => h.Description)
            .HasMaxLength(2000);
-
-        builder.Property(h => h.CreatedAt)
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }

@@ -9,6 +9,10 @@ public class RoleConfiguration : IEntityTypeConfiguration<ApplicationRole>
 {
     public void Configure(EntityTypeBuilder<ApplicationRole> builder)
     {
+        builder.Property(r => r.Id)
+            .HasColumnType("binary(16)")
+            .ValueGeneratedOnAdd();
+
         builder.Property(r => r.Description)
            .HasMaxLength(200);
 

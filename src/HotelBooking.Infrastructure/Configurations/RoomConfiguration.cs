@@ -10,9 +10,23 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
     {
         builder.HasKey(r => r.Id);
 
+        builder.Property(r => r.Id)
+                .HasColumnType("binary(16)")
+                .ValueGeneratedOnAdd();
+
+        builder.Property(r => r.CreatedAt)
+              .HasColumnType("datetime(6)")
+              .ValueGeneratedOnAdd();
+
+        builder.Property(r => r.UpdatedAt)
+               .HasColumnType("datetime(6)");
+
         builder.Property(r => r.PricePerNight)
             .HasPrecision(10, 2)
             .IsRequired();
+
+        builder.Property(r => r.HotelId).HasColumnType("binary(16)");
+        builder.Property(r => r.CategoryId).HasColumnType("binary(16)");
 
         builder.HasOne(r => r.Hotel)
             .WithMany(h => h.Rooms)
