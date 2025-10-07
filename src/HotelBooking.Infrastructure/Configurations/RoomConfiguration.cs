@@ -25,6 +25,10 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
             .HasPrecision(10, 2)
             .IsRequired();
 
+        builder.Property(r => r.Number)
+            .IsRequired()
+            .HasMaxLength(20);
+
         builder.Property(r => r.HotelId).HasColumnType("binary(16)");
         builder.Property(r => r.CategoryId).HasColumnType("binary(16)");
 
