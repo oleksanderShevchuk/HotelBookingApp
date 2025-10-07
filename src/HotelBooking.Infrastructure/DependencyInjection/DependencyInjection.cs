@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using HotelBooking.Application.Interfaces.Bookings;
 using HotelBooking.Application.Interfaces.Hotels;
 using HotelBooking.Application.Interfaces.Rooms;
 using HotelBooking.Application.Services;
@@ -26,10 +27,12 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped<IHotelRepository, HotelRepository>();
         services.AddScoped<IRoomRepository, RoomRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
 
         // Services
         services.AddScoped<IHotelService, HotelService>();
         services.AddScoped<IRoomService, RoomService>();
+        services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<TokenService>();
 
         // Identity
