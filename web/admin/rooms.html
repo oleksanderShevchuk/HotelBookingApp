@@ -1,11 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8'>
-    <title>admin/rooms.html</title>
-    <link rel='stylesheet' href='css/styles.css'>
-</head>
-<body>
-    <h1>admin/rooms.html</h1>
-</body>
-</html>
+<div class="container mx-auto py-8" x-data="adminRoomsPage()" x-init="init()">
+    <h1 class="text-3xl font-bold mb-4">Rooms</h1>
+
+    <div class="flex justify-between mb-4">
+        <button @click="openAdd()" class="bg-blue-600 text-white px-4 py-2 rounded">+ Add Room</button>
+        <input x-model="filter" placeholder="Filter by hotel name..." class="border p-2 rounded w-64" />
+    </div>
+
+    <table class="min-w-full bg-white shadow rounded">
+        <thead>
+            <tr class="border-b bg-gray-100">
+                <th class="p-2 text-left">Number</th>
+                <th class="p-2 text-left">Hotel</th>
+                <th class="p-2 text-left">Capacity</th>
+                <th class="p-2 text-left">Price</th>
+                <th class="p-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="room in filteredRooms()" :key="room.id">
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="p-2" x-text="room.number"></td>
+                    <td class="p-2" x-text="room.hotelName"></td>
+                    <td class="p-2" x-text="room.capacity"></td>
+                    <td class="p-2">$<span x-text="room.pricePerNight"></span></td>
+                    <td class="p-2 space-x-2">
+                        <button @click="openEdit(room)" class="text-blue-600">Edit</button>
+                        <button @click="deleteRoom(room.id)" class="text-red-600">Delete</button>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>
+
+<script type="module">
+  import { adminRoomsPage } from "../js/presentation/pages/adminRoomsPage.js";
+  document.addEventListener("alpine:init", () => Alpine.data("adminRoomsPage", adminRoomsPage));
+</script>

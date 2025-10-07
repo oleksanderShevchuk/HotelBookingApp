@@ -6,6 +6,7 @@
     <title>Hotel Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-100 min-h-full flex flex-col">
 
@@ -29,12 +30,16 @@
     </nav>
 
     <!-- Main -->
-    <main class="flex-1 container mx-auto py-8" x-data="hotelList()" x-init="loadHotels()">
-        <h2 class="text-2xl font-semibold mb-4">Available Hotels</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <template x-for="hotel in hotels" :key="hotel.id">
-                <div class="bg-white p-4 rounded-lg shadow">
-                    <h3 class="text-xl font-semibold" x-text="hotel.name"></h3>
+    <main class="container mx-auto py-8" x-data="hotelsPage()" x-init="init()">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-semibold">Available Hotels</h2>
+            <input x-model="search" placeholder="Search by city..." class="border p-2 rounded w-64" />
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <template x-for="hotel in filteredHotels()" :key="hotel.id">
+                <div class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition">
+                    <h3 class="text-xl font-bold mb-2" x-text="hotel.name"></h3>
                     <p class="text-gray-600" x-text="hotel.city"></p>
                     <p class="text-sm mt-2" x-text="hotel.description"></p>
                     <a :href="'hotel.html?id=' + hotel.id"
@@ -57,9 +62,18 @@
         }
     </script>
     <script type="module">
-        import { hotelsPage } from "./js/presentation/pages/hotelsPage.js";
+        import { hotelUseCase } from "./js/usecases/hotelUseCase.js";
         document.addEventListener("alpine:init", () => {
-            Alpine.data("hotelsPage", hotelsPage);
+            Alpine.data("hotelsPage", () => ({
+                hotels: [],
+                search: '',
+                async init() { this.hotels = await hotelUseCase.getAll(); },
+                filteredHotels() {
+                    return this.hotels.filter(h =>
+                        h.city.toLowerCase().includes(this.search.toLowerCase()) ||
+                        h.name.toLowerCase().includes(this.search.toLowerCase()));
+                }
+            }));
         });
     </script>
 
