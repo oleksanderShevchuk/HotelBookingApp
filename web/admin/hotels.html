@@ -1,65 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Hotel Details</title>
+    <meta charset="UTF-8">
+    <title>Admin - Hotels</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body x-data="hotelPage()" x-init="load()" class="bg-gray-50 min-h-screen">
+<body class="bg-gray-100" x-data="adminHotelsPage()" x-init="init()">
 
-    <div class="container mx-auto py-6">
-        <a href="index.html" class="text-blue-600">&larr; Back</a>
+    <div class="container mx-auto py-8">
+        <h1 class="text-3xl font-bold mb-4">Hotels</h1>
+        <button @click="openAdd()" class="bg-blue-600 text-white px-4 py-2 rounded mb-4">+ Add Hotel</button>
 
-        <h1 class="text-3xl font-bold mb-4" x-text="hotel.name"></h1>
-        <p class="text-gray-600 mb-2" x-text="hotel.city"></p>
-        <p class="mb-6" x-text="hotel.description"></p>
+        <table class="min-w-full bg-white shadow rounded">
+            <thead>
+                <tr class="border-b">
+                    <th class="p-2 text-left">Name</th>
+                    <th class="p-2 text-left">City</th>
+                    <th class="p-2 text-left">Address</th>
+                    <th class="p-2 text-left">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="hotel in hotels" :key="hotel.id">
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2" x-text="hotel.name"></td>
+                        <td class="p-2" x-text="hotel.city"></td>
+                        <td class="p-2" x-text="hotel.address"></td>
+                        <td class="p-2 space-x-2">
+                            <button @click="openEdit(hotel)" class="text-blue-600">Edit</button>
+                            <button @click="deleteHotel(hotel.id)" class="text-red-600">Delete</button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 
-        <h2 class="text-2xl font-semibold mb-3">Rooms</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <template x-for="room in rooms">
-                <div class="bg-white p-4 shadow rounded">
-                    <h3 class="text-lg font-bold">Room <span x-text="room.number"></span></h3>
-                    <p>Capacity: <span x-text="room.capacity"></span></p>
-                    <p>Price per night: $<span x-text="room.pricePerNight"></span></p>
-                    <button @click="book(room.id)"
-                            class="mt-2 bg-blue-600 text-white px-3 py-1 rounded">
-                        Book
-                    </button>
-                </div>
-            </template>
+    <!-- Modal -->
+    <div x-show="modal.open" class="fixed inset-0 bg-black/40 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow w-96" x-data="modal">
+            <h2 class="text-xl font-bold mb-4" x-text="modal.title"></h2>
+            <input x-model="modal.data.name" class="border p-2 w-full mb-2" placeholder="Name">
+            <input x-model="modal.data.city" class="border p-2 w-full mb-2" placeholder="City">
+            <input x-model="modal.data.address" class="border p-2 w-full mb-2" placeholder="Address">
+            <textarea x-model="modal.data.description" class="border p-2 w-full mb-2" placeholder="Description"></textarea>
+            <button @click="modal.save()" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+            <button @click="modal.open=false" class="ml-2 text-gray-600">Cancel</button>
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script>
-    function hotelPage() {
-      return {
-        hotel: {},
-        rooms: [],
-        async load() {
-          const params = new URLSearchParams(location.search);
-          const id = params.get("id");
-          const hotelRes = await api.get(`/api/hotels/${id}`);
-          this.hotel = await hotelRes.json();
-          const roomRes = await api.get(`/api/rooms?hotelId=${id}`);
-          this.rooms = await roomRes.json();
-        },
-        async book(roomId) {
-          const token = localStorage.getItem('token');
-          if (!token) {
-            alert('Please login first');
-            location.href = 'login.html';
-            return;
-          }
-          const checkIn = prompt("Enter check-in date (YYYY-MM-DD):");
-          const checkOut = prompt("Enter check-out date (YYYY-MM-DD):");
-          const res = await api.post('/api/bookings', { roomId, checkInDate: checkIn, checkOutDate: checkOut });
-          const text = await res.text();
-          alert(text);
-        }
-      }
-    }
+    <script type="module">
+        import { adminHotelsPage } from "../js/presentation/pages/adminHotelsPage.js";
+        import { modal } from "../js/presentation/components/modal.js";
+        window.modal = modal;
+        document.addEventListener("alpine:init", () => Alpine.data("adminHotelsPage", adminHotelsPage));
     </script>
 </body>
 </html>
