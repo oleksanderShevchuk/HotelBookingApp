@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - HotelBooking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div x-data="loginForm()" class="bg-white p-6 rounded-lg shadow w-96">
+        <h2 class="text-xl font-bold mb-4">Login</h2>
+
+        <input type="email" x-model="email" placeholder="Email"
+               class="border p-2 w-full mb-3 rounded" />
+        <input type="password" x-model="password" placeholder="Password"
+               class="border p-2 w-full mb-3 rounded" />
+
+        <button @click="submit()" class="w-full bg-blue-600 text-white p-2 rounded">Login</button>
+        <p x-text="message" class="text-sm text-red-500 mt-2"></p>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+    function loginForm() {
+      return {
+        email: '',
+        password: '',
+        message: '',
+        async submit() {
+          const res = await api.post('/api/auth/login', { email: this.email, password: this.password });
+          if (!res.ok) {
+            this.message = 'Invalid credentials';
+            return;
+          }
+          const data = await res.json();
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify({ email: this.email }));
+          location.href = 'index.html';
+        }
+      }
+    }
+    </script>
+</body>
+</html>
