@@ -1,4 +1,4 @@
-import { hotelUseCase } from "../../usecases/hotelUseCase.js";
+import { hotelUseCase } from "../usecases/hotelUseCase.js";
 
 export function hotelsPage() {
     return {

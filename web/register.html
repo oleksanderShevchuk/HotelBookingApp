@@ -4,20 +4,18 @@
     <meta charset="UTF-8" />
     <title>Register - HotelBooking</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/pages/registerPage.js" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
     <div x-data="registerPage()" class="bg-white p-8 rounded-lg shadow w-96">
         <h2 class="text-2xl font-bold mb-4 text-center text-blue-700">Create Account</h2>
 
-        <input type="text" x-model="userName" placeholder="Username"
-               class="border p-2 w-full mb-3 rounded" />
-        <input type="email" x-model="email" placeholder="Email"
-               class="border p-2 w-full mb-3 rounded" />
-        <input type="password" x-model="password" placeholder="Password"
-               class="border p-2 w-full mb-4 rounded" />
+        <input type="text" x-model="userName" placeholder="Username" class="border p-2 w-full mb-3 rounded" />
+        <input type="email" x-model="email" placeholder="Email" class="border p-2 w-full mb-3 rounded" />
+        <input type="password" x-model="password" placeholder="Password" class="border p-2 w-full mb-4 rounded" />
 
         <button @click="register()" class="bg-blue-600 text-white w-full p-2 rounded">Register</button>
         <p class="text-sm mt-2 text-red-600" x-text="message"></p>
@@ -27,33 +25,5 @@
             <a href="login.html" class="text-blue-600 font-semibold">Login</a>
         </p>
     </div>
-
-    <script type="module">
-    import { authUseCase } from "./js/usecases/authUseCase.js";
-
-    function registerPage() {
-      return {
-        userName: '',
-        email: '',
-        password: '',
-        message: '',
-        async register() {
-          const { success, message } = await authUseCase.register({
-            userName: this.userName,
-            email: this.email,
-            password: this.password,
-            role: "Client"
-          });
-          this.message = message;
-          if (success) {
-            alert("Registration successful!");
-            location.href = "login.html";
-          }
-        }
-      };
-    }
-
-    document.addEventListener("alpine:init", () => Alpine.data("registerPage", registerPage));
-    </script>
 </body>
 </html>

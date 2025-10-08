@@ -1,30 +1,61 @@
-import { roomUseCase } from "../../../usecases/roomUseCase.js";
-import { modal } from "../components/modal.js";
+import { roomUseCase } from "../../usecases/roomUseCase.js";
+import { hotelUseCase } from "../../usecases/hotelUseCase.js";
 
 export function adminRoomsPage() {
+    const labels = {
+        number: "Room number",
+        capacity: "Capacity",
+        pricePerNight: "Price per night",
+        hotelId: "Hotel"
+    };
+
     return {
         rooms: [],
-        modal: modal(),
+        hotels: [],
+        filter: "",
         async init() {
-            this.rooms = await roomUseCase.getAll();
+            [this.rooms, this.hotels] = await Promise.all([
+                roomUseCase.getAll(),
+                hotelUseCase.getAll()
+            ]);
+        },
+        filteredRooms() {
+            const q = this.filter.trim().toLowerCase();
+            if (!q) return this.rooms;
+            return this.rooms.filter(r =>
+                (r.hotelName || "").toLowerCase().includes(q) ||
+                (String(r.number) || "").toLowerCase().includes(q)
+            );
         },
         openAdd() {
-            this.modal.show("Add Room", { number: "", capacity: 1, pricePerNight: 100, hotelId: "" }, async (data) => {
-                await roomUseCase.create(data);
-                this.init();
-            });
+            window.dispatchEvent(new CustomEvent("modal:show", {
+                detail: {
+                    title: "Add Room",
+                    data: { number: "", capacity: 1, pricePerNight: 100, hotelId: "" },
+                    onSave: async (payload) => { await roomUseCase.create(payload); await this.init(); },
+                    labels,
+                    mode: "create",
+                    lookups: { hotels: this.hotels }
+                }
+            }));
         },
         openEdit(room) {
-            this.modal.show("Edit Room", { ...room }, async (data) => {
-                await roomUseCase.update(room.id, data);
-                this.init();
-            });
+            window.dispatchEvent(new CustomEvent("modal:show", {
+                detail: {
+                    title: "Edit Room",
+                    data: { ...room },
+                    onSave: async (payload) => { await roomUseCase.update(room.id, payload); await this.init(); },
+                    original: room,
+                    labels,
+                    mode: "edit",
+                    lookups: { hotels: this.hotels }
+                }
+            }));
         },
         async deleteRoom(id) {
-            if (confirm("Delete this room?")) {
-                await roomUseCase.delete(id);
-                this.init();
-            }
+            if (!confirm("Delete this room?")) return;
+            await roomUseCase.delete(id);
+            await this.init();
         }
     };
 }

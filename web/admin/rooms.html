@@ -1,39 +1,123 @@
-<div class="container mx-auto py-8" x-data="adminRoomsPage()" x-init="init()">
-    <h1 class="text-3xl font-bold mb-4">Rooms</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Rooms</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/components/adminNav.entry.js" defer></script>
+    <script type="module" src="/js/presentation/components/modal.entry.js" defer></script>
+    <script type="module" src="/js/presentation/pages/adminRoomsPage.entry.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="bg-gray-100">
 
-    <div class="flex justify-between mb-4">
-        <button @click="openAdd()" class="bg-blue-600 text-white px-4 py-2 rounded">+ Add Room</button>
-        <input x-model="filter" placeholder="Filter by hotel name..." class="border p-2 rounded w-64" />
+    <nav class="admin-nav" x-data="adminNav()">
+        <div class="nav-wrap">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
+
+                <div class="admin-tabs">
+                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
+                </div>
+            </div>
+            <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
+                 class="flex items-center gap-3">
+                <a x-show="user && user.role === 'Admin'"
+                   href="/admin/hotels.html"
+                   class="btn-edit">Admin</a>
+
+                <template x-if="user">
+                    <div class="flex gap-4 items-center">
+                        <span x-text="user.email" class="text-gray-700"></span>
+                        <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
+                    </div>
+                </template>
+                <template x-if="!user">
+                    <div class="space-x-4">
+                        <a href="login.html" class="text-blue-600">Login</a>
+                        <a href="register.html" class="text-blue-600">Register</a>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page container mx-auto" x-data="adminRoomsPage()" x-init="init()">
+        <div class="flex justify-between mb-4">
+            <button @click="openAdd()" class="btn-primary">+ Add Room</button>
+            <input x-model="filter" placeholder="Filter by hotel name..." class="input input-sm w-64" />
+        </div>
+
+        <div class="table-wrap">
+            <table class="table table-fixed w-full">
+                <thead>
+                    <tr>
+                        <th class="w-2/12">Number</th>
+                        <th class="w-4/12">Hotel</th>
+                        <th class="w-2/12">Capacity</th>
+                        <th class="w-2/12">Price</th>
+                        <th class="w-2/12">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="room in filteredRooms()" :key="room.id">
+                        <tr>
+                            <td class="truncate" x-text="room.number"></td>
+                            <td class="truncate" :title="room.hotelName" x-text="room.hotelName"></td>
+                            <td class="truncate" x-text="room.capacity"></td>
+                            <td class="truncate">$<span x-text="room.pricePerNight"></span></td>
+                            <td class="whitespace-nowrap">
+                                <button class="btn-edit" @click="openEdit(room)">Edit</button>
+                                <button class="btn-danger" @click="deleteRoom(room.id)">Delete</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <table class="min-w-full bg-white shadow rounded">
-        <thead>
-            <tr class="border-b bg-gray-100">
-                <th class="p-2 text-left">Number</th>
-                <th class="p-2 text-left">Hotel</th>
-                <th class="p-2 text-left">Capacity</th>
-                <th class="p-2 text-left">Price</th>
-                <th class="p-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template x-for="room in filteredRooms()" :key="room.id">
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-2" x-text="room.number"></td>
-                    <td class="p-2" x-text="room.hotelName"></td>
-                    <td class="p-2" x-text="room.capacity"></td>
-                    <td class="p-2">$<span x-text="room.pricePerNight"></span></td>
-                    <td class="p-2 space-x-2">
-                        <button @click="openEdit(room)" class="text-blue-600">Edit</button>
-                        <button @click="deleteRoom(room.id)" class="text-red-600">Delete</button>
-                    </td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
-</div>
+    <!-- Modal -->
+    <div x-data="modalComp()" x-show="open" class="modal-overlay">
+        <div class="modal-card" @click.stop>
+            <h2 class="modal-title" x-text="title"></h2>
 
-<script type="module">
-  import { adminRoomsPage } from "../js/presentation/pages/adminRoomsPage.js";
-  document.addEventListener("alpine:init", () => Alpine.data("adminRoomsPage", adminRoomsPage));
-</script>
+            <div class="grid grid-cols-2 gap-2">
+                <label class="label col-span-2">Room number</label>
+                <input x-model="data.number" class="input col-span-2" placeholder="Number">
+
+                <label class="label col-span-2">Capacity</label>
+                <input x-model.number="data.capacity" type="number" min="1" class="input col-span-2" placeholder="Capacity">
+
+                <label class="label col-span-2">Price per night</label>
+                <input x-model.number="data.pricePerNight" type="number" min="0" class="input col-span-2" placeholder="Price per night">
+
+                <label class="label col-span-2">Hotel</label>
+                <select x-model="data.hotelId" class="input col-span-2">
+                    <option value="">Select hotel…</option>
+                    <template x-for="h in (lookups?.hotels || [])" :key="h.id">
+                        <option :value="h.id" x-text="h.name + ' — ' + h.city"></option>
+                    </template>
+                </select>
+            </div>
+
+            <p class="error" x-text="errors._common"></p>
+
+            <div class="mt-4 flex gap-2 justify-end">
+                <button class="btn" @click="open=false">Cancel</button>
+                <button class="btn-primary"
+                        @click="save({ required: ['number','capacity','pricePerNight','hotelId'] })"
+                        :disabled="saving"
+                        :class="{'opacity-60 pointer-events-none': saving}">
+                    <span x-show="!saving">Save</span>
+                    <span x-show="saving">Saving…</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,19 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hotel Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/presentation/components/navbar.entry.js"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="bg-gray-100 min-h-full flex flex-col">
 
     <!-- Navbar -->
     <nav class="bg-white shadow p-4 flex justify-between items-center">
         <h1 class="text-xl font-bold text-blue-700">🏨 HotelBooking</h1>
-        <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }">
+        <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
+             class="flex items-center gap-3">
+            <a x-show="user && user.role === 'Admin'"
+               href="/admin/hotels.html"
+               class="btn-edit">Admin</a>
+
             <template x-if="user">
                 <div class="flex gap-4 items-center">
                     <span x-text="user.email" class="text-gray-700"></span>
-                    <button @click="logout()" class="text-red-600">Logout</button>
+                    <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
                 </div>
             </template>
             <template x-if="!user">
@@ -30,7 +37,7 @@
     </nav>
 
     <!-- Main -->
-    <main class="container mx-auto py-8" x-data="hotelsPage()" x-init="init()">
+    <main class="page container mx-auto py-8" x-data="hotelsPage()" x-init="init()">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-semibold">Available Hotels</h2>
             <input x-model="search" placeholder="Search by city..." class="border p-2 rounded w-64" />
@@ -48,34 +55,6 @@
             </template>
         </div>
     </main>
-
-    <script src="js/api.js"></script>
-    <script>
-        function hotelList() {
-            return {
-                hotels: [],
-                async loadHotels() {
-                    const res = await api.get('/api/hotels');
-                    if (res.ok) this.hotels = await res.json();
-                }
-            }
-        }
-    </script>
-    <script type="module">
-        import { hotelUseCase } from "./js/usecases/hotelUseCase.js";
-        document.addEventListener("alpine:init", () => {
-            Alpine.data("hotelsPage", () => ({
-                hotels: [],
-                search: '',
-                async init() { this.hotels = await hotelUseCase.getAll(); },
-                filteredHotels() {
-                    return this.hotels.filter(h =>
-                        h.city.toLowerCase().includes(this.search.toLowerCase()) ||
-                        h.name.toLowerCase().includes(this.search.toLowerCase()));
-                }
-            }));
-        });
-    </script>
 
 </body>
 </html>

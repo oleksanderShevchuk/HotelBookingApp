@@ -1,11 +1,10 @@
 import { userBookingUseCase } from "../../usecases/userBookingUseCase.js";
-import { User } from "../../core/models/User.js";
+import { User } from "/js/core/models/User.js";
 
 export function profilePage() {
     return {
         bookings: [],
         user: User.current(),
-
         async init() {
             if (!this.user) {
                 alert("Please login first.");
@@ -14,11 +13,11 @@ export function profilePage() {
             }
             this.bookings = await userBookingUseCase.getMyBookings();
         },
-
         async cancelBooking(id) {
             if (!confirm("Cancel this booking?")) return;
             await userBookingUseCase.cancelBooking(id);
             this.init();
-        }
+        },
+        logout() { User.logout(); location.href = "/"; },
     };
 }

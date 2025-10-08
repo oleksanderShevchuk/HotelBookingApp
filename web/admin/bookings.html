@@ -1,37 +1,148 @@
-<div class="container mx-auto py-8" x-data="adminBookingsPage()" x-init="init()">
-    <h1 class="text-3xl font-bold mb-4">Bookings</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Bookings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/components/adminNav.entry.js" defer></script>
+    <script type="module" src="/js/presentation/components/modal.entry.js" defer></script>
+    <script type="module" src="/js/presentation/pages/adminBookingsPage.entry.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="bg-gray-100">
 
-    <table class="min-w-full bg-white shadow rounded">
-        <thead>
-            <tr class="border-b bg-gray-100">
-                <th class="p-2 text-left">User</th>
-                <th class="p-2 text-left">Hotel</th>
-                <th class="p-2 text-left">Room</th>
-                <th class="p-2 text-left">Check-In</th>
-                <th class="p-2 text-left">Check-Out</th>
-                <th class="p-2 text-left">Total</th>
-                <th class="p-2 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template x-for="b in bookings" :key="b.id">
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="p-2" x-text="b.userEmail"></td>
-                    <td class="p-2" x-text="b.hotelName"></td>
-                    <td class="p-2" x-text="b.roomNumber"></td>
-                    <td class="p-2" x-text="new Date(b.checkInDate).toLocaleDateString()"></td>
-                    <td class="p-2" x-text="new Date(b.checkOutDate).toLocaleDateString()"></td>
-                    <td class="p-2">$<span x-text="b.totalPrice"></span></td>
-                    <td class="p-2">
-                        <button @click="deleteBooking(b.id)" class="text-red-600">Delete</button>
-                    </td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
-</div>
+    <nav class="admin-nav" x-data="adminNav()">
+        <div class="nav-wrap">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
-<script type="module">
-  import { adminBookingsPage } from "../js/presentation/pages/adminBookingsPage.js";
-  document.addEventListener("alpine:init", () => Alpine.data("adminBookingsPage", adminBookingsPage));
-</script>
+                <div class="admin-tabs">
+                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
+                </div>
+            </div>
+            <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
+                 class="flex items-center gap-3">
+                <a x-show="user && user.role === 'Admin'"
+                   href="/admin/hotels.html"
+                   class="btn-edit">Admin</a>
+
+                <template x-if="user">
+                    <div class="flex gap-4 items-center">
+                        <span x-text="user.email" class="text-gray-700"></span>
+                        <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
+                    </div>
+                </template>
+                <template x-if="!user">
+                    <div class="space-x-4">
+                        <a href="login.html" class="text-blue-600">Login</a>
+                        <a href="register.html" class="text-blue-600">Register</a>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page container mx-auto" x-data="adminBookingsPage()" x-init="init()">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold">Bookings</h1>
+            <button class="btn-primary" @click="openAdd()">+ Add Booking</button>
+        </div>
+
+        <div class="table-wrap">
+            <table class="table w-full">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Hotel</th>
+                        <th>Room</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="b in bookings" :key="b.id">
+                        <tr>
+                            <td class="truncate" x-text="b.userEmail"></td>
+                            <td class="truncate" x-text="b.hotelName"></td>
+                            <td class="truncate" x-text="b.roomNumber"></td>
+                            <td class="truncate" x-text="new Date(b.checkInDate).toLocaleDateString()"></td>
+                            <td class="truncate" x-text="new Date(b.checkOutDate).toLocaleDateString()"></td>
+                            <td class="truncate">$<span x-text="b.totalPrice"></span></td>
+                            <td class="whitespace-nowrap">
+                                <button class="btn-danger" @click="deleteBooking(b.id)">Delete</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div x-data="modalComp()" x-show="open" class="modal-overlay">
+        <div class="modal-card" @click.stop>
+            <h2 class="modal-title" x-text="title"></h2>
+
+            <div class="grid grid-cols-2 gap-2">
+                <label class="label col-span-2">User email</label>
+                <input x-model="data.userEmail" class="input col-span-2" placeholder="user@example.com">
+
+                <label class="label col-span-2">Hotel</label>
+                <select x-model="data.hotelId" class="input col-span-2">
+                    <option value="">Select hotel…</option>
+                    <template x-for="h in (lookups?.hotels || [])" :key="h.id">
+                        <option :value="h.id" x-text="h.name + ' — ' + h.city"></option>
+                    </template>
+                </select>
+
+                <label class="label col-span-2">Room</label>
+                <select x-model="data.roomId" class="input col-span-2">
+                    <option value="">Select room…</option>
+                    <template x-for="r in (lookups?.rooms || []).filter(r => !data.hotelId || r.hotelId === data.hotelId)"
+                              :key="r.id">
+                        <option :value="r.id" x-text="'#' + r.number + ' — $' + r.pricePerNight + '/night'"></option>
+                    </template>
+                </select>
+
+                <label class="label col-span-2">Check-in</label>
+                <input x-model="data.checkInDate" type="date" class="input col-span-2">
+
+                <label class="label col-span-2">Check-out</label>
+                <input x-model="data.checkOutDate" type="date" class="input col-span-2">
+            </div>
+
+            <div class="mt-2 muted text-sm">
+                <span x-data
+                      x-text="(() =>
+                    {
+                    const rooms = (lookups?.rooms||[]);
+                    const sel = rooms.find(r => r.id === data.roomId);
+                    if(!sel || !data.checkInDate || !data.checkOutDate) return 'Total: —';
+                    const a = new Date(data.checkInDate), b = new Date(data.checkOutDate);
+                    const nights = Math.max(0, Math.round((b-a)/(1000*60*60*24)));
+                    return nights ? `Total: $${nights * (sel.pricePerNight||0)} (${nights} nights)` : 'Total: —';
+                    })()">
+                </span>
+            </div>
+
+            <p class="error" x-text="errors._common"></p>
+
+            <div class="mt-4 flex gap-2 justify-end">
+                <button class="btn" @click="open=false">Cancel</button>
+                <button class="btn-primary"
+                        @click="save({ required:['userEmail','hotelId','roomId','checkInDate','checkOutDate'] })"
+                        :disabled="saving"
+                        :class="{'opacity-60 pointer-events-none': saving}">
+                    <span x-show="!saving">Save</span>
+                    <span x-show="saving">Saving…</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,11 +1,340 @@
-body {
-    font-family: 'Inter', sans-serif;
+/* === Base === */
+:root {
+    --brand: #2563eb; /* blue-600 */
+    --brand-600: #2563eb;
+    --brand-700: #1d4ed8;
+    --danger: #dc2626;
+    --muted: #64748b;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e5e7eb;
 }
 
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    background: var(--bg);
+    color: #0f172a;
+}
+
+a {
+    color: var(--brand-600);
+    text-decoration: none;
+}
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+/* === Buttons === */
 button {
-    transition: 0.2s;
+    transition: .2s;
 }
 
     button:hover {
-        opacity: 0.8;
+        opacity: .9;
     }
+
+.btn {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    padding: .5rem .75rem;
+}
+
+.btn-primary {
+    background: var(--brand-600);
+    color: #fff;
+    border: none;
+    border-radius: .5rem;
+    padding: .5rem .9rem;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    border-radius: .5rem;
+    padding: .35rem .6rem;
+}
+
+.btn-link {
+    background: transparent;
+    border: none;
+    color: var(--brand-600);
+    padding: 0;
+}
+
+.btn[disabled], .btn-primary[disabled], .btn-danger[disabled] {
+    opacity: .6;
+    pointer-events: none;
+}
+
+/* === Inputs === */
+.input {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    padding: .5rem .75rem;
+    background: #fff;
+}
+
+    .input:focus {
+        outline: 2px solid rgba(37,99,235,.25);
+    }
+
+.input-sm {
+    padding: .35rem .5rem;
+}
+
+/* Labels */
+.label {
+    font-size: .85rem;
+    color: #334155;
+    font-weight: 600;
+    display: block;
+}
+
+/* Validation */
+.error {
+    color: var(--danger);
+    font-size: .875rem;
+}
+
+/* === Tables === */
+.table-wrap {
+    overflow: auto;
+}
+
+.table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: .5rem;
+}
+
+    .table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: #f1f5f9; /* slate-100 */
+        text-align: left;
+        font-weight: 600;
+        padding: .6rem .75rem;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        padding: .6rem .75rem;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+.truncate {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+/* Column width helpers (if not using Tailwind w- classes) */
+.col-10 {
+    width: 10%;
+}
+
+.col-15 {
+    width: 15%;
+}
+
+.col-20 {
+    width: 20%;
+}
+
+.col-25 {
+    width: 25%;
+}
+
+.col-30 {
+    width: 30%;
+}
+
+.col-35 {
+    width: 35%;
+}
+
+.col-40 {
+    width: 40%;
+}
+
+/* Cards / Containers */
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: .75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
+}
+
+/* Navbar */
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: .8rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    color: var(--brand-700);
+    font-weight: 800;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+    backdrop-filter: blur(1px);
+}
+
+.modal-card {
+    background: #fff;
+    width: 100%;
+    max-width: 40rem;
+    border-radius: .75rem;
+    padding: 1.25rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,.15);
+    max-height: 85vh;
+    overflow: auto;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+}
+
+/* Utilities */
+.muted {
+    color: var(--muted);
+}
+
+.separator {
+    height: 1px;
+    background: var(--border);
+    margin: .75rem 0;
+}
+
+/* Відступи сторінки (контейнер) */
+.page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1.25rem;
+    padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .page {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .page {
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+}
+
+/* Кнопка Edit — легкий акцент (outline) */
+.btn-edit {
+    background: #fff;
+    border: 1px solid var(--brand-600, #2563eb);
+    color: var(--brand-600, #2563eb);
+    border-radius: .5rem;
+    padding: .35rem .6rem;
+    line-height: 1.1;
+}
+
+    .btn-edit:hover {
+        background: rgba(37,99,235,.06);
+    }
+
+/* Адмін-навігація (верхні вкладки) */
+.admin-nav {
+    background: #fff;
+    border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+    .admin-nav .nav-wrap {
+        display: flex;
+        gap: .5rem;
+        align-items: center;
+        justify-content: space-between;
+        padding: .75rem 1rem;
+    }
+
+.admin-tabs {
+    display: flex;
+    gap: .25rem;
+    flex-wrap: wrap;
+}
+
+.admin-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .4rem .7rem;
+    border-radius: .5rem;
+    color: #334155;
+    border: 1px solid transparent;
+}
+
+    .admin-tab:hover {
+        background: #f1f5f9;
+    }
+
+    .admin-tab.active {
+        background: #eef2ff;
+        color: #1e3a8a;
+        border-color: #c7d2fe;
+        font-weight: 600;
+    }
+
+/* Крихти (breadcrumbs) */
+.breadcrumbs {
+    font-size: .9rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    margin: .25rem 0 1rem;
+}
+
+    .breadcrumbs a {
+        color: inherit;
+    }
+
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }

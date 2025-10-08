@@ -3,58 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin - Hotels</title>
+    <link rel="stylesheet" href="/css/styles.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/pages/adminHotelsPage.entry.js" defer></script>
+    <script type="module" src="/js/presentation/components/modal.entry.js" defer></script>
+    <script type="module" src="/js/presentation/components/adminNav.entry.js" defer></script>
+    <script src="https://unpkg.com/@alpinejs/teleport" defer></script>
+    <script src="https://unpkg.com/@alpinejs/focus" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body class="bg-gray-100" x-data="adminHotelsPage()" x-init="init()">
+    <!-- Admin top nav -->
+    <nav class="admin-nav" x-data="adminNav()">
+        <div class="nav-wrap">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
-    <div class="container mx-auto py-8">
-        <h1 class="text-3xl font-bold mb-4">Hotels</h1>
-        <button @click="openAdd()" class="bg-blue-600 text-white px-4 py-2 rounded mb-4">+ Add Hotel</button>
+                <div class="admin-tabs">
+                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
+                </div>
+            </div>
+            <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
+                 class="flex items-center gap-3">
+                <a x-show="user && user.role === 'Admin'"
+                   href="/admin/hotels.html"
+                   class="btn-edit">Admin</a>
 
-        <table class="min-w-full bg-white shadow rounded">
-            <thead>
-                <tr class="border-b">
-                    <th class="p-2 text-left">Name</th>
-                    <th class="p-2 text-left">City</th>
-                    <th class="p-2 text-left">Address</th>
-                    <th class="p-2 text-left">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template x-for="hotel in hotels" :key="hotel.id">
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-2" x-text="hotel.name"></td>
-                        <td class="p-2" x-text="hotel.city"></td>
-                        <td class="p-2" x-text="hotel.address"></td>
-                        <td class="p-2 space-x-2">
-                            <button @click="openEdit(hotel)" class="text-blue-600">Edit</button>
-                            <button @click="deleteHotel(hotel.id)" class="text-red-600">Delete</button>
-                        </td>
-                    </tr>
+                <template x-if="user">
+                    <div class="flex gap-4 items-center">
+                        <span x-text="user.email" class="text-gray-700"></span>
+                        <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
+                    </div>
                 </template>
-            </tbody>
-        </table>
-    </div>
+                <template x-if="!user">
+                    <div class="space-x-4">
+                        <a href="login.html" class="text-blue-600">Login</a>
+                        <a href="register.html" class="text-blue-600">Register</a>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Modal -->
-    <div x-show="modal.open" class="fixed inset-0 bg-black/40 flex items-center justify-center">
-        <div class="bg-white p-6 rounded shadow w-96" x-data="modal">
-            <h2 class="text-xl font-bold mb-4" x-text="modal.title"></h2>
-            <input x-model="modal.data.name" class="border p-2 w-full mb-2" placeholder="Name">
-            <input x-model="modal.data.city" class="border p-2 w-full mb-2" placeholder="City">
-            <input x-model="modal.data.address" class="border p-2 w-full mb-2" placeholder="Address">
-            <textarea x-model="modal.data.description" class="border p-2 w-full mb-2" placeholder="Description"></textarea>
-            <button @click="modal.save()" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
-            <button @click="modal.open=false" class="ml-2 text-gray-600">Cancel</button>
+    <div class="page container mx-auto">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold">Hotels</h1>
+            <button @click="openAdd()" class="btn-primary">+ Add Hotel</button>
+        </div>
+
+        <div class="table-wrap">
+            <table class="table table-fixed w-full">
+                <thead>
+                    <tr>
+                        <th class="w-3/12">Name</th>
+                        <th class="w-2/12">City</th>
+                        <th class="w-4/12">Address</th>
+                        <th class="w-2/12">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="hotel in hotels" :key="hotel.id">
+                        <tr>
+                            <td class="truncate" :title="hotel.name" x-text="hotel.name"></td>
+                            <td class="truncate" :title="hotel.city" x-text="hotel.city"></td>
+                            <td class="truncate" :title="hotel.address" x-text="hotel.address"></td>
+                            <td class="whitespace-nowrap">
+                                <button class="btn-edit" @click="openEdit(hotel)">Edit</button>
+                                <button class="btn-danger" @click="deleteHotel(hotel.id)">Delete</button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script type="module">
-        import { adminHotelsPage } from "../js/presentation/pages/adminHotelsPage.js";
-        import { modal } from "../js/presentation/components/modal.js";
-        window.modal = modal;
-        document.addEventListener("alpine:init", () => Alpine.data("adminHotelsPage", adminHotelsPage));
-    </script>
+    <!-- Model -->
+    <div x-data="modalComp()" x-show="open" class="modal-overlay">
+        <div class="modal-card" @click.stop>
+            <h2 class="modal-title" x-text="title"></h2>
+
+            <div class="space-y-2">
+                <label class="label">Name</label>
+                <input x-model="data.name" class="input" placeholder="Name">
+                <p class="error" x-text="errors.name"></p>
+
+                <label class="label">City</label>
+                <input x-model="data.city" class="input" placeholder="City">
+                <p class="error" x-text="errors.city"></p>
+
+                <label class="label">Address</label>
+                <input x-model="data.address" class="input" placeholder="Address">
+
+                <label class="label">Description</label>
+                <textarea x-model="data.description" class="input" placeholder="Description"></textarea>
+
+                <p class="error" x-text="errors._common"></p>
+            </div>
+
+            <div class="mt-5 flex gap-2 justify-end">
+                <button class="btn" @click="open=false">Cancel</button>
+                <button class="btn-primary"
+                        :class="{'opacity-60 pointer-events-none': saving}"
+                        @click="save({ required: ['name','city','address'] })">
+                    <span x-show="!saving">Save</span>
+                    <span x-show="saving">Saving…</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

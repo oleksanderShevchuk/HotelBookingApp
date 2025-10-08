@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <title>Profile - Hotel Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/pages/profilePage.entry.js" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-100 min-h-screen" x-data="profilePage()" x-init="init()">
-
-    <!-- Navbar -->
     <nav class="bg-white shadow p-4 flex justify-between items-center">
-        <a href="index.html" class="font-bold text-blue-700 text-xl">🏨 HotelBooking</a>
+        <a href="/index.html" class="font-bold text-blue-700 text-xl">🏨 HotelBooking</a>
         <div>
             <span x-text="user?.email" class="text-gray-700 mr-4"></span>
-            <button @click="User.logout()" class="text-red-600">Logout</button>
+            <button @click="logout()" class="text-red-600">Logout</button>
         </div>
     </nav>
 
-    <!-- Content -->
     <div class="container mx-auto py-8">
         <h1 class="text-2xl font-bold mb-4">My Bookings</h1>
 
@@ -30,20 +26,12 @@
             <template x-for="b in bookings" :key="b.id">
                 <div class="bg-white rounded shadow p-4">
                     <p class="font-bold">Booking ID: <span x-text="b.id"></span></p>
-                    <p>Check-in: <span x-text="b.checkInDate.toLocaleDateString()"></span></p>
-                    <p>Check-out: <span x-text="b.checkOutDate.toLocaleDateString()"></span></p>
+                    <p>Check-in: <span x-text="new Date(b.checkInDate).toLocaleDateString()"></span></p>
+                    <p>Check-out: <span x-text="new Date(b.checkOutDate).toLocaleDateString()"></span></p>
                     <p>Total: $<span x-text="b.totalPrice"></span></p>
                     <button @click="cancelBooking(b.id)" class="mt-3 text-red-600 hover:underline">Cancel</button>
                 </div>
             </template>
         </div>
     </div>
-
-    <script type="module">
-    import { profilePage } from "./js/presentation/pages/profilePage.js";
-    import { User } from "./js/core/models/User.js";
-    window.User = User;
-    document.addEventListener("alpine:init", () => Alpine.data("profilePage", profilePage));
-    </script>
 </body>
-</html>

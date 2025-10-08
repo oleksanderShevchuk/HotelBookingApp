@@ -1,11 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <title>hotel.html</title>
-    <link rel='stylesheet' href='css/styles.css'>
+    <meta charset="UTF-8" />
+    <title>Hotel Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/pages/hotelPage.entry.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
-<body>
-    <h1>hotel.html</h1>
+<body x-data="hotelPage()" x-init="load()" class="bg-gray-50 min-h-screen">
+
+    <div class="container mx-auto py-6">
+        <a href="index.html" class="text-blue-600">&larr; Back</a>
+
+        <h1 class="text-3xl font-bold mb-4" x-text="hotel.name"></h1>
+        <p class="text-gray-600 mb-2" x-text="hotel.city"></p>
+        <p class="mb-6" x-text="hotel.description"></p>
+
+        <h2 class="text-2xl font-semibold mb-3">Rooms</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <template x-for="room in rooms" :key="room.id">
+                <div class="bg-white p-4 shadow rounded">
+                    <h3 class="text-lg font-bold">Room <span x-text="room.number"></span></h3>
+                    <p>Capacity: <span x-text="room.capacity"></span></p>
+                    <p>Price per night: $<span x-text="room.pricePerNight"></span></p>
+                    <button @click="book(room.id)" class="mt-2 bg-blue-600 text-white px-3 py-1 rounded">Book</button>
+                </div>
+            </template>
+        </div>
+    </div>
 </body>
 </html>

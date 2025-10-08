@@ -8,6 +8,9 @@ export const bookingUseCase = {
         const data = await res.json();
         return data.map(b => new Booking(b));
     },
+    async create(payload) {
+        return await apiClient.post("/api/bookings", payload);
+    },
     async delete(id) {
         return await apiClient.delete(`/api/bookings/${id}`);
     }

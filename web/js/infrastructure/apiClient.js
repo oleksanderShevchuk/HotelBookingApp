@@ -1,5 +1,5 @@
 export const apiClient = {
-    baseUrl: "https://localhost:44379",
+    baseUrl: "http://localhost:5232",
 
     async request(method, url, body = null) {
         const token = localStorage.getItem("token");

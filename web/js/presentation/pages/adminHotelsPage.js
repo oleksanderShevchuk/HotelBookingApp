@@ -1,34 +1,42 @@
-import { hotelUseCase } from "../../../usecases/hotelUseCase.js";
-import { modal } from "../components/modal.js";
+import { hotelUseCase } from "../../usecases/hotelUseCase.js";
 
 export function adminHotelsPage() {
-    return {
-        hotels: [],
-        modal: modal(),
+  const labels = { name: "Name", city: "City", address: "Address", description: "Description" };
 
-        async init() {
-            this.hotels = await hotelUseCase.getAll();
-        },
+  return {
+    hotels: [],
+    async init() { this.hotels = await hotelUseCase.getAll(); },
 
-        openAdd() {
-            this.modal.show("Add Hotel", { name: "", city: "", address: "", description: "" }, async (data) => {
-                await hotelUseCase.create(data);
-                this.init();
-            });
-        },
+    openAdd() {
+      window.dispatchEvent(new CustomEvent("modal:show", {
+        detail: {
+          title: "Add Hotel",
+          data: { name: "", city: "", address: "", description: "" },
+          onSave: async (payload) => { await hotelUseCase.create(payload); await this.init(); },
 
-        openEdit(hotel) {
-            this.modal.show("Edit Hotel", { ...hotel }, async (data) => {
-                await hotelUseCase.update(hotel.id, data);
-                this.init();
-            });
-        },
-
-        async deleteHotel(id) {
-            if (confirm("Delete this hotel?")) {
-                await hotelUseCase.delete(id);
-                this.init();
-            }
+          labels,
+          mode: "create"
         }
-    };
+      }));
+    },
+
+    openEdit(hotel) {
+      window.dispatchEvent(new CustomEvent("modal:show", {
+        detail: {
+          title: "Edit Hotel",
+          data: { ...hotel },
+          onSave: async (payload) => { await hotelUseCase.update(hotel.id, payload); await this.init(); },
+          original: hotel,   // pass previous state for diffs
+          labels,
+          mode: "edit"
+        }
+      }));
+    },
+
+    async deleteHotel(id) {
+      if (!confirm("Delete this hotel?")) return;
+      await hotelUseCase.delete(id);
+      await this.init();
+    }
+  };
 }

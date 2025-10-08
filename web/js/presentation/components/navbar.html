@@ -1,6 +1,5 @@
-<nav class="bg-white shadow p-4 flex justify-between items-center">
-    <a href="/index.html" class="text-xl font-bold text-blue-700">?? HotelBooking</a>
-
+﻿<nav class="bg-white shadow p-4 flex justify-between items-center">
+    <a href="/index.html" class="text-xl font-bold text-blue-700">🏨 HotelBooking</a>
     <div x-data="navbar()">
         <template x-if="user">
             <div class="flex items-center gap-4">
@@ -8,7 +7,6 @@
                 <button @click="logout()" class="text-red-600">Logout</button>
             </div>
         </template>
-
         <template x-if="!user">
             <div class="space-x-4">
                 <a href="/login.html" class="text-blue-600 hover:underline">Login</a>
@@ -17,3 +15,6 @@
         </template>
     </div>
 </nav>
+
+<script type="module" src="/js/presentation/components/navbar.entry.js" defer></script>
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
