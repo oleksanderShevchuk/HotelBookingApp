@@ -6,12 +6,14 @@ function registerPage() {
         email: "",
         password: "",
         message: "",
+        phoneNumber: "",
         async register() {
             const { success, message } = await authUseCase.register({
                 userName: this.userName,
                 email: this.email,
                 password: this.password,
                 role: "Client",
+                phoneNumber: this.phoneNumber,
             });
             this.message = message || "";
             if (success) {

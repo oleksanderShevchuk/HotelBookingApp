@@ -6,33 +6,43 @@
     <title>Hotel Booking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="./js/main.js"></script>
+    <script type="module" src="/js/presentation/components/adminNav.entry.js" defer></script>
     <script type="module" src="./js/presentation/components/navbar.entry.js"></script>
+    <script type="module" src="./js/presentation/pages/hotelsPage.js"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="bg-gray-100 min-h-full flex flex-col">
 
-    <!-- Navbar -->
-    <nav class="bg-white shadow p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-blue-700">🏨 HotelBooking</h1>
-        <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
-             class="flex items-center gap-3">
-            <a x-show="user && user.role === 'Admin'"
-               href="/admin/hotels.html"
-               class="btn-edit">Admin</a>
+    <nav class="admin-nav" x-data="adminNav()" x-init="init()">
+        <div class="nav-wrap">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
-            <template x-if="user">
-                <div class="flex gap-4 items-center">
-                    <span x-text="user.email" class="text-gray-700"></span>
-                    <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
+                <div class="admin-tabs">
+                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
                 </div>
-            </template>
-            <template x-if="!user">
-                <div class="space-x-4">
-                    <a href="login.html" class="text-blue-600">Login</a>
-                    <a href="register.html" class="text-blue-600">Register</a>
-                </div>
-            </template>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a x-show="isAdmin()" href="/admin/hotels.html" @click.prevent="goAdmin()" class="btn-edit">Admin</a>
+
+                <template x-if="user">
+                    <div class="flex items-center gap-3">
+                        <span x-text="user.email" class="text-gray-700"></span>
+                        <button @click="logout()" class="btn-danger">Logout</button>
+                    </div>
+                </template>
+
+                <template x-if="!user">
+                    <div class="flex items-center gap-3">
+                        <a href="/login.html" class="btn">Login</a>
+                        <a href="/register.html" class="btn">Register</a>
+                    </div>
+                </template>
+            </div>
         </div>
     </nav>
 
@@ -44,17 +54,37 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-            <template x-for="hotel in filteredHotels()" :key="hotel.id">
-                <div class="bg-white p-4 rounded-lg shadow hover:shadow-lg transition">
-                    <h3 class="text-xl font-bold mb-2" x-text="hotel.name"></h3>
-                    <p class="text-gray-600" x-text="hotel.city"></p>
-                    <p class="text-sm mt-2" x-text="hotel.description"></p>
-                    <a :href="'hotel.html?id=' + hotel.id"
-                       class="mt-3 inline-block bg-blue-600 text-white px-3 py-1 rounded">View Rooms</a>
+            <template x-for="hotel in filteredHotels()" :key="hotel.id || hotel.name">
+                <div class="card hover:shadow-lg transition">
+                    <table class="kv-table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td x-text="hotel.name || '—'"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">City</th>
+                                <td x-text="hotel.city || '—'"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Description</th>
+                                <td x-text="hotel.description || '—'"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-3">
+                        <button class="btn-primary inline-block"
+                                @click="goToHotel(hotel)"
+                                :disabled="!hotel.id">
+                            View Rooms
+                        </button>
+                        <span class="muted text-sm" x-show="!hotel.id">Missing hotel id</span>
+                    </div>
                 </div>
             </template>
+
         </div>
     </main>
-
 </body>
 </html>

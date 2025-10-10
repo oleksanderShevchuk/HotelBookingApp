@@ -3,6 +3,7 @@ export class User {
         this.id = id;
         this.email = email;
         this.role = role;
+        this.phoneNumber = phoneNumber;
     }
 
     static current() {

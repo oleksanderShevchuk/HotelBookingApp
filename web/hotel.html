@@ -4,29 +4,128 @@
     <meta charset="UTF-8" />
     <title>Hotel Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="/js/presentation/components/adminNav.entry.js" defer></script>
     <script type="module" src="/js/presentation/pages/hotelPage.entry.js" defer></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body x-data="hotelPage()" x-init="load()" class="bg-gray-50 min-h-screen">
 
-    <div class="container mx-auto py-6">
-        <a href="index.html" class="text-blue-600">&larr; Back</a>
+    <nav class="admin-nav" x-data="adminNav()" x-init="init()">
+        <div class="nav-wrap">
+            <div class="flex items-center gap-3">
+                <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
-        <h1 class="text-3xl font-bold mb-4" x-text="hotel.name"></h1>
-        <p class="text-gray-600 mb-2" x-text="hotel.city"></p>
-        <p class="mb-6" x-text="hotel.description"></p>
-
-        <h2 class="text-2xl font-semibold mb-3">Rooms</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <template x-for="room in rooms" :key="room.id">
-                <div class="bg-white p-4 shadow rounded">
-                    <h3 class="text-lg font-bold">Room <span x-text="room.number"></span></h3>
-                    <p>Capacity: <span x-text="room.capacity"></span></p>
-                    <p>Price per night: $<span x-text="room.pricePerNight"></span></p>
-                    <button @click="book(room.id)" class="mt-2 bg-blue-600 text-white px-3 py-1 rounded">Book</button>
+                <div class="admin-tabs">
+                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
+                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
                 </div>
-            </template>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a x-show="isAdmin()" href="/admin/hotels.html" @click.prevent="goAdmin()" class="btn-edit">Admin</a>
+
+                <template x-if="user">
+                    <div class="flex items-center gap-3">
+                        <span x-text="user.email" class="text-gray-700"></span>
+                        <button @click="logout()" class="btn-danger">Logout</button>
+                    </div>
+                </template>
+
+                <template x-if="!user">
+                    <div class="flex items-center gap-3">
+                        <a href="/login.html" class="btn">Login</a>
+                        <a href="/register.html" class="btn">Register</a>
+                    </div>
+                </template>
+            </div>
         </div>
+    </nav>
+
+    <div class="container mx-auto py-6">
+        <a href="/index.html" class="text-blue-600">&larr; Back</a>
+
+        <template x-if="error">
+            <div class="mt-4 bg-red-50 border border-red-200 text-red-700 p-3 rounded">
+                <span x-text="error"></span>
+            </div>
+        </template>
+
+        <template x-if="loading">
+            <p class="mt-4 text-gray-500">Loading…</p>
+        </template>
+
+        <template x-if="!loading && !error">
+            <div>
+                <h1 class="text-3xl font-bold mb-6" x-text="hotel.name || 'Hotel'"></h1>
+
+                <h2 class="text-2xl font-semibold mb-3">Rooms</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <template x-for="room in rooms" :key="room.id">
+                        <div class="room-card">
+                            <h3 class="text-lg">Room <span x-text="room.number"></span></h3>
+                            <p>Capacity: <span x-text="room.capacity"></span></p>
+                            <p>Price per night: $<span x-text="room.pricePerNight"></span></p>
+                            <button @click="openBooking(room)" class="btn-book mt-2">Book</button>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Booking modal -->
+                <div x-show="booking.open" x-transition.opacity class="modal-overlay">
+                    <div class="modal-card" @click.stop>
+                        <h3 class="modal-title">
+                            Book room <span x-text="booking.room?.number"></span>
+                        </h3>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700">Check-in</label>
+                                <input type="date"
+                                       class="input w-full"
+                                       :min="todayStr()"
+                                       x-model="booking.checkIn" />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700">Check-out</label>
+                                <input type="date"
+                                       class="input w-full"
+                                       :min="booking.checkIn || todayStr()"
+                                       x-model="booking.checkOut" />
+                            </div>
+
+                            <template x-if="bookingSummary().error">
+                                <p class="text-sm text-red-600" x-text="bookingSummary().error"></p>
+                            </template>
+
+                            <div class="booking-summary">
+                                <p>
+                                    Nights: <strong x-text="bookingSummary().nights ?? '—'"></strong>
+                                </p>
+                                <p>
+                                    Price per night: $<strong x-text="booking.room?.pricePerNight ?? '—'"></strong>
+                                </p>
+                                <p>
+                                    Total: $<strong x-text="bookingSummary().total ?? '—'"></strong>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex justify-end gap-2">
+                            <button class="btn" @click="closeBooking()">Cancel</button>
+                            <button class="btn-primary"
+                                    :class="{'opacity-60 pointer-events-none': booking.saving}"
+                                    @click="confirmBooking()">
+                                <span x-show="!booking.saving">Confirm booking</span>
+                                <span x-show="booking.saving">Saving…</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
     </div>
 </body>
 </html>

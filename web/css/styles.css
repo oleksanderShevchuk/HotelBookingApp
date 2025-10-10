@@ -1,6 +1,5 @@
-/* === Base === */
 :root {
-    --brand: #2563eb; /* blue-600 */
+    --brand: #2563eb;
     --brand-600: #2563eb;
     --brand-700: #1d4ed8;
     --danger: #dc2626;
@@ -29,7 +28,6 @@ a {
         text-decoration: underline;
     }
 
-/* === Buttons === */
 button {
     transition: .2s;
 }
@@ -73,7 +71,6 @@ button {
     pointer-events: none;
 }
 
-/* === Inputs === */
 .input {
     display: block;
     width: 100%;
@@ -91,7 +88,6 @@ button {
     padding: .35rem .5rem;
 }
 
-/* Labels */
 .label {
     font-size: .85rem;
     color: #334155;
@@ -99,13 +95,11 @@ button {
     display: block;
 }
 
-/* Validation */
 .error {
     color: var(--danger);
     font-size: .875rem;
 }
 
-/* === Tables === */
 .table-wrap {
     overflow: auto;
 }
@@ -122,7 +116,7 @@ button {
         position: sticky;
         top: 0;
         z-index: 1;
-        background: #f1f5f9; /* slate-100 */
+        background: #f1f5f9;
         text-align: left;
         font-weight: 600;
         padding: .6rem .75rem;
@@ -150,7 +144,6 @@ button {
     white-space: nowrap;
 }
 
-/* Column width helpers (if not using Tailwind w- classes) */
 .col-10 {
     width: 10%;
 }
@@ -179,7 +172,6 @@ button {
     width: 40%;
 }
 
-/* Cards / Containers */
 .card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -188,7 +180,6 @@ button {
     box-shadow: 0 4px 14px rgba(15, 23, 42, .04);
 }
 
-/* Navbar */
 .navbar {
     background: #fff;
     border-bottom: 1px solid var(--border);
@@ -203,7 +194,6 @@ button {
     font-weight: 800;
 }
 
-/* Modal */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -244,8 +234,8 @@ button {
     margin: .75rem 0;
 }
 
-/* Відступи сторінки (контейнер) */
-.page {
+.page,
+.container {
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 1.25rem;
@@ -253,20 +243,21 @@ button {
 }
 
 @media (min-width: 768px) {
-    .page {
+    .page,
+    .container {
         padding-left: 2rem;
         padding-right: 2rem;
     }
 }
 
 @media (min-width: 1280px) {
-    .page {
+    .page,
+    .container {
         padding-left: 3rem;
         padding-right: 3rem;
     }
 }
 
-/* Кнопка Edit — легкий акцент (outline) */
 .btn-edit {
     background: #fff;
     border: 1px solid var(--brand-600, #2563eb);
@@ -280,7 +271,6 @@ button {
         background: rgba(37,99,235,.06);
     }
 
-/* Адмін-навігація (верхні вкладки) */
 .admin-nav {
     background: #fff;
     border-bottom: 1px solid var(--border, #e5e7eb);
@@ -321,7 +311,6 @@ button {
         font-weight: 600;
     }
 
-/* Крихти (breadcrumbs) */
 .breadcrumbs {
     font-size: .9rem;
     color: #64748b;
@@ -338,3 +327,137 @@ button {
         .breadcrumbs a:hover {
             text-decoration: underline;
         }
+
+.kv-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .kv-table th,
+    .kv-table td {
+        padding: .5rem .75rem;
+        border-bottom: 1px solid var(--border, #e5e7eb);
+        vertical-align: top;
+    }
+
+    .kv-table th {
+        width: 30%;
+        text-align: left;
+        font-weight: 600;
+        color: #475569;
+        background: #f8fafc;
+        border-right: 1px solid var(--border, #e5e7eb);
+    }
+
+    .kv-table td {
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .kv-table tr:last-child th,
+    .kv-table tr:last-child td {
+        border-bottom: 0;
+    }
+
+.room-card {
+    background: #fff;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: .75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+    .room-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(15, 23, 42, .10);
+    }
+
+    .room-card h3 {
+        font-weight: 700;
+        margin-bottom: .25rem;
+    }
+
+.btn-book {
+    background: var(--brand-600, #2563eb);
+    color: #fff;
+    border: none;
+    border-radius: .5rem;
+    padding: .5rem .9rem;
+    transition: .2s;
+}
+
+    .btn-book:hover {
+        opacity: .9;
+    }
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 1000;
+    backdrop-filter: blur(1px);
+    animation: fadeIn .12s ease-out;
+}
+
+.modal-card {
+    background: #fff;
+    width: 100%;
+    max-width: 34rem; 
+    border-radius: .75rem;
+    padding: 1.25rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,.15);
+    max-height: 85vh;
+    overflow: auto;
+    animation: popIn .12s ease-out;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+}
+
+input[type="date"].input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: .7;
+}
+
+input[type="date"].input:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+}
+
+.booking-summary {
+    font-size: .95rem;
+    color: #334155;
+    background: #f8fafc;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: .5rem;
+    padding: .75rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(.98);
+        opacity: 0
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1
+    }
+}

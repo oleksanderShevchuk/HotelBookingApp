@@ -13,7 +13,7 @@
 </head>
 <body class="bg-gray-100">
 
-    <nav class="admin-nav" x-data="adminNav()">
+    <nav class="admin-nav" x-data="adminNav()" x-init="init()">
         <div class="nav-wrap">
             <div class="flex items-center gap-3">
                 <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
@@ -24,22 +24,21 @@
                     <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
                 </div>
             </div>
-            <div x-data="{ user: JSON.parse(localStorage.getItem('user') || 'null') }"
-                 class="flex items-center gap-3">
-                <a x-show="user && user.role === 'Admin'"
-                   href="/admin/hotels.html"
-                   class="btn-edit">Admin</a>
+
+            <div class="flex items-center gap-3">
+                <a x-show="isAdmin()" href="/admin/hotels.html" @click.prevent="goAdmin()" class="btn-edit">Admin</a>
 
                 <template x-if="user">
-                    <div class="flex gap-4 items-center">
+                    <div class="flex items-center gap-3">
                         <span x-text="user.email" class="text-gray-700"></span>
-                        <button @click="localStorage.removeItem('user'); location.reload()" class="text-red-600">Logout</button>
+                        <button @click="logout()" class="btn-danger">Logout</button>
                     </div>
                 </template>
+
                 <template x-if="!user">
-                    <div class="space-x-4">
-                        <a href="login.html" class="text-blue-600">Login</a>
-                        <a href="register.html" class="text-blue-600">Register</a>
+                    <div class="flex items-center gap-3">
+                        <a href="/login.html" class="btn">Login</a>
+                        <a href="/register.html" class="btn">Register</a>
                     </div>
                 </template>
             </div>
