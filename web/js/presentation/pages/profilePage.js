@@ -1,5 +1,5 @@
 import { userBookingUseCase } from "../../usecases/userBookingUseCase.js";
-import { User } from "/js/core/models/User.js";
+import { User } from "../../core/models/user.js";
 
 export function profilePage() {
     return {

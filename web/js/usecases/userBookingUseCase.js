@@ -1,5 +1,5 @@
 import { apiClient } from "../infrastructure/apiClient.js";
-import { Booking } from "../core/models/Booking.js";
+import { Booking } from "../core/models/booking.js";
 
 export const userBookingUseCase = {
     async getMyBookings() {

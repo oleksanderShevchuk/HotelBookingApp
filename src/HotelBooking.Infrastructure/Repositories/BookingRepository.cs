@@ -51,6 +51,7 @@ public class BookingRepository : IBookingRepository
         return await _db.Bookings
             .Include(b => b.Room)
             .Include(b => b.User)
+            .Include(b => b.Room.Hotel)
             .Where(b => b.UserId == userId)
             .AsNoTracking()
             .ToListAsync(ct);

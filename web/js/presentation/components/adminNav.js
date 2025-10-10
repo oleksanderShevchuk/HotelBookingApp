@@ -42,10 +42,6 @@ export function adminNav() {
             }
         },
 
-        goAdmin() {
-            location.href = "/admin/hotels.html";
-        },
-
         logout() {
             localStorage.removeItem("user");
             localStorage.removeItem("token");

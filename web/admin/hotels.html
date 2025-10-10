@@ -18,6 +18,7 @@
         <div class="nav-wrap">
             <div class="flex items-center gap-3">
                 <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
+                <a x-show="user" href="/profile.html" class="admin-tab">My bookings</a>
 
                 <div class="admin-tabs">
                     <a href="/admin/hotels.html"
@@ -36,8 +37,6 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a x-show="isAdmin()" href="/admin/hotels.html" @click.prevent="goAdmin()" class="btn-edit">Admin</a>
-
                 <template x-if="user">
                     <div class="flex items-center gap-3">
                         <span x-text="user.email" class="text-gray-700"></span>
