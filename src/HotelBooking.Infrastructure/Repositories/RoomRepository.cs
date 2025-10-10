@@ -59,4 +59,12 @@ public class RoomRepository : IRoomRepository
         _db.Rooms.Update(room);
         await _db.SaveChangesAsync(ct);
     }
+
+    public async Task<IEnumerable<RoomCategory>> GetAllRoomCategoriesAsync(CancellationToken ct = default)
+    {
+        return await _db.RoomCategories
+            .AsNoTracking()
+            .AsQueryable()
+            .ToListAsync(ct);
+    }
 }

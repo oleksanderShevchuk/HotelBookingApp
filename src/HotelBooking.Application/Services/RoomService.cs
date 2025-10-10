@@ -63,4 +63,10 @@ public class RoomService : IRoomService
         await _repo.UpdateAsync(room, ct);
         return true;
     }
+
+    public async Task<IEnumerable<RoomCategoryDto>> GetAllRoomCategoriesAsync(CancellationToken ct = default)
+    {
+        var rc = await _repo.GetAllRoomCategoriesAsync(ct);
+        return rc.Select(RoomMapper.ToCatagoryDto);
+    }
 }

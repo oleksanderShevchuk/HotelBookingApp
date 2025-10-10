@@ -17,4 +17,11 @@ public static class RoomMapper
             RoomCategoryId = room.CategoryId,
             RoomCategoryName = room.Category?.Name
         };
+    public static RoomCategoryDto ToCatagoryDto(RoomCategory room) =>
+        new()
+        {
+            Id = room.Id,
+            Name = room.Name,
+            Description = room.Description
+        };
 }

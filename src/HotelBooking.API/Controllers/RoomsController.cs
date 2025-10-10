@@ -58,4 +58,12 @@ public class RoomsController : ControllerBase
         var success = await _service.DeleteAsync(id);
         return success ? NoContent() : NotFound();
     }
+
+    [HttpGet("categories")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllRoomCategories()
+    {
+        var roomCategories = await _service.GetAllRoomCategoriesAsync();
+        return Ok(roomCategories);
+    }
 }

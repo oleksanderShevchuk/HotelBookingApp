@@ -44,7 +44,7 @@ public class BookingsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Client")]
+    [Authorize(Roles = "Client,Admin")]
     public async Task<IActionResult> Create([FromBody] CreateBookingDto dto)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

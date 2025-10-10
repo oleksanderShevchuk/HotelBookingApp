@@ -10,5 +10,6 @@ namespace HotelBooking.Application.Interfaces.Rooms
         Task UpdateAsync(Room room, CancellationToken ct = default);
         Task DeleteAsync(Room room, CancellationToken ct = default);
         Task<bool> ExistsAsync(Guid id, CancellationToken ct = default);
+        Task<IEnumerable<RoomCategory>> GetAllRoomCategoriesAsync(CancellationToken ct);
     }
 }
