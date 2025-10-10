@@ -13,15 +13,24 @@
 </head>
 <body class="bg-gray-100">
 
-    <nav class="admin-nav" x-data="adminNav()" x-init="init()">
+    <nav class="admin-nav" x-data="adminNav()" x-init="init(); guardAdmin()">
         <div class="nav-wrap">
             <div class="flex items-center gap-3">
                 <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
                 <div class="admin-tabs">
-                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
-                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
-                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
+                    <a href="/admin/hotels.html"
+                       :class="['admin-tab', {active: isActive('/admin/hotels.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/hotels.html')">Hotels</a>
+
+                    <a href="/admin/rooms.html"
+                       :class="['admin-tab', {active: isActive('/admin/rooms.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/rooms.html')">Rooms</a>
+
+                    <a href="/admin/bookings.html"
+                       :class="['admin-tab', {active: isActive('/admin/bookings.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/bookings.html')">Bookings</a>
+
                 </div>
             </div>
 
@@ -83,7 +92,7 @@
         </div>
     </div>
 
-    <div x-data="modalComp()" x-show="open" class="modal-overlay">
+    <div x-data="modalComp()" x-show="open" x-cloak class="modal-overlay">
         <div class="modal-card" @click.stop>
             <h2 class="modal-title" x-text="title"></h2>
 

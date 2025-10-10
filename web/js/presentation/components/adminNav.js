@@ -26,6 +26,22 @@ export function adminNav() {
             return this.user && this.user.role === "Admin";
         },
 
+        requireAdmin(evt, path) {
+            if (this.isAdmin()) {
+                location.href = path;
+                return;
+            }
+            evt?.preventDefault();
+            alert("Access denied: admin only.");
+        },
+
+        guardAdmin() {
+            if (!this.isAdmin()) {
+                alert("You don't have access to this page.");
+                location.replace("/index.html");
+            }
+        },
+
         goAdmin() {
             location.href = "/admin/hotels.html";
         },

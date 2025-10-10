@@ -16,10 +16,18 @@
             <div class="flex items-center gap-3">
                 <a href="/index.html" class="brand text-xl font-bold text-blue-700">🏨 HotelBooking</a>
 
-                <div class="admin-tabs">
-                    <a :class="['admin-tab', {active: isActive('/admin/hotels.html')}]" href="/admin/hotels.html">Hotels</a>
-                    <a :class="['admin-tab', {active: isActive('/admin/rooms.html')}]" href="/admin/rooms.html">Rooms</a>
-                    <a :class="['admin-tab', {active: isActive('/admin/bookings.html')}]" href="/admin/bookings.html">Bookings</a>
+                <div class="admin-tabs" x-show="isAdmin()">
+                    <a href="/admin/hotels.html"
+                       :class="['admin-tab', {active: isActive('/admin/hotels.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/hotels.html')">Hotels</a>
+
+                    <a href="/admin/rooms.html"
+                       :class="['admin-tab', {active: isActive('/admin/rooms.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/rooms.html')">Rooms</a>
+
+                    <a href="/admin/bookings.html"
+                       :class="['admin-tab', {active: isActive('/admin/bookings.html')}]"
+                       @click.prevent="requireAdmin($event, '/admin/bookings.html')">Bookings</a>
                 </div>
             </div>
 
@@ -73,7 +81,7 @@
                 </div>
 
                 <!-- Booking modal -->
-                <div x-show="booking.open" x-transition.opacity class="modal-overlay">
+                <div x-show="booking.open" x-cloak x-transition.opacity class="modal-overlay">
                     <div class="modal-card" @click.stop>
                         <h3 class="modal-title">
                             Book room <span x-text="booking.room?.number"></span>

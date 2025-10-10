@@ -461,3 +461,8 @@ input[type="date"].input:hover::-webkit-calendar-picker-indicator {
         opacity: 1
     }
 }
+
+[x-cloak] {
+    display: none !important;
+}
+

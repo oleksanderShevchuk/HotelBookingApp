@@ -8,8 +8,7 @@
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
+<body class="bg-gray-100 min-h-screen flex flex-col">
     <nav class="admin-nav">
         <div class="nav-wrap">
             <div class="flex items-center gap-3">
@@ -18,20 +17,22 @@
         </div>
     </nav>
 
-    <div x-data="loginForm()" class="bg-white p-6 rounded-lg shadow w-96">
-        <h2 class="text-xl font-bold mb-4">Login</h2>
+    <main class="flex-1 flex items-center justify-center">
+        <div x-data="loginForm()" class="bg-white p-6 rounded-lg shadow w-96">
+            <h2 class="text-xl font-bold mb-4">Login</h2>
 
-        <input type="email" x-model="email" placeholder="Email"
-               class="border p-2 w-full mb-3 rounded" />
-        <input type="password" x-model="password" placeholder="Password"
-               class="border p-2 w-full mb-3 rounded" />
+            <input type="email" x-model="email" placeholder="Email"
+                   class="border p-2 w-full mb-3 rounded" />
+            <input type="password" x-model="password" placeholder="Password"
+                   class="border p-2 w-full mb-3 rounded" />
 
-        <button @click="submit()" class="w-full bg-blue-600 text-white p-2 rounded">Login</button>
-        <p x-text="message" class="text-sm text-red-500 mt-2"></p>
-        <p class="mt-4 text-center text-gray-600 text-sm">
-            Doesn't have an account?
-            <a href="register.html" class="text-blue-600 font-semibold">Register</a>
-        </p>
-    </div>
+            <button @click="submit()" class="w-full bg-blue-600 text-white p-2 rounded">Login</button>
+            <p x-text="message" class="text-sm text-red-500 mt-2"></p>
+            <p class="mt-4 text-center text-gray-600 text-sm">
+                Doesn't have an account?
+                <a href="register.html" class="text-blue-600 font-semibold">Register</a>
+            </p>
+        </div>
+    </main>
 </body>
 </html>
