@@ -67,6 +67,7 @@
                     <tr>
                         <th class="w-2/12">Number</th>
                         <th class="w-4/12">Hotel</th>
+                        <th class="w-3/12">Category</th>
                         <th class="w-2/12">Capacity</th>
                         <th class="w-2/12">Price</th>
                         <th class="w-2/12">Actions</th>
@@ -77,6 +78,7 @@
                         <tr>
                             <td class="truncate" x-text="room.number"></td>
                             <td class="truncate" :title="room.hotelName" x-text="room.hotelName"></td>
+                            <td class="truncate" :title="room.roomCategoryName" x-text="room.roomCategoryName || '—'"></td>
                             <td class="truncate" x-text="room.capacity"></td>
                             <td class="truncate">$<span x-text="room.pricePerNight"></span></td>
                             <td class="whitespace-nowrap">
@@ -112,6 +114,15 @@
                         <option :value="h.id" x-text="h.name + ' — ' + h.city"></option>
                     </template>
                 </select>
+
+                <label class="label col-span-2">Category</label>
+                <select x-model="data.roomCategoryId" class="input col-span-2">
+                    <option value="">Select category…</option>
+                    <template x-for="c in (lookups?.categories || [])" :key="c.id">
+                        <option :value="c.id" x-text="c.name"></option>
+                    </template>
+                </select>
+                <p class="error" x-text="errors.roomCategoryId"></p>
             </div>
 
             <p class="error" x-text="errors._common"></p>
@@ -119,7 +130,7 @@
             <div class="mt-4 flex gap-2 justify-end">
                 <button class="btn" @click="open=false">Cancel</button>
                 <button class="btn-primary"
-                        @click="save({ required: ['number','capacity','pricePerNight','hotelId'] })"
+                        @click="save({ required: ['number','capacity','pricePerNight','hotelId','roomCategoryId'] })"
                         :disabled="saving"
                         :class="{'opacity-60 pointer-events-none': saving}">
                     <span x-show="!saving">Save</span>

@@ -26,7 +26,7 @@ export function adminHotelsPage() {
           title: "Edit Hotel",
           data: { ...hotel },
           onSave: async (payload) => { await hotelUseCase.update(hotel.id, payload); await this.init(); },
-          original: hotel,   // pass previous state for diffs
+          original: hotel, 
           labels,
           mode: "edit"
         }

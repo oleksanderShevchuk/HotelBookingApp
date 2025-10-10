@@ -1,11 +1,12 @@
 export class Room {
-    constructor({ id, number, capacity, pricePerNight, hotelId, hotelName, roomCategoryName }) {
+    constructor({ id, number, capacity, pricePerNight, hotelId, hotelName, roomCategoryId, roomCategoryName }) {
         this.id = id;
         this.number = number;
         this.capacity = capacity;
         this.pricePerNight = pricePerNight;
         this.hotelId = hotelId;
         this.hotelName = hotelName;
+        this.roomCategoryId = roomCategoryId;  
         this.roomCategoryName = roomCategoryName;
     }
 }
