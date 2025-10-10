@@ -31,6 +31,7 @@ public class BookingRepository : IBookingRepository
         return await _db.Bookings
             .Include(b => b.Room)
             .Include(b => b.User)
+            .Include(b => b.Room.Hotel)
             .AsNoTracking()
             .ToListAsync(ct);
     }
@@ -40,6 +41,8 @@ public class BookingRepository : IBookingRepository
         return await _db.Bookings
             .Include(b => b.Room)
             .Include(b => b.User)
+            .Include(b => b.Room.Hotel)
+            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.Id == id, ct);
     }
 

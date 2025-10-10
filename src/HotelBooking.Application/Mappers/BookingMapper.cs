@@ -13,6 +13,8 @@ public static class BookingMapper
             RoomNumber = b.Room?.Number,
             UserId = b.UserId,
             UserEmail = b.User?.Email,
+            HotelId = b.Room?.HotelId,
+            HotelName = b.Room?.Hotel?.Name,
             CheckInDate = b.CheckInDate,
             CheckOutDate = b.CheckOutDate,
             TotalPrice = b.TotalPrice
